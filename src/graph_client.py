@@ -89,6 +89,21 @@ class GraphClient:
                 data=file_handle.read(),
             )
 
+    def get_drive_delta(
+        self,
+        drive_id: str,
+        *,
+        delta_link: str | None = None,
+        token_latest: bool = False,
+    ) -> dict[str, Any]:
+        if delta_link:
+            return self._request_absolute_json("GET", delta_link)
+
+        endpoint = f"/drives/{drive_id}/root/delta"
+        if token_latest:
+            endpoint = f"{endpoint}?token=latest"
+        return self._request_json("GET", endpoint)
+
     def _request_json(
         self,
         method: str,
@@ -98,6 +113,10 @@ class GraphClient:
         data: bytes | None = None,
     ) -> dict[str, Any]:
         response = self._request(method, endpoint, headers=headers, data=data)
+        return response.json()
+
+    def _request_absolute_json(self, method: str, url: str) -> dict[str, Any]:
+        response = self._request_absolute(method, url)
         return response.json()
 
     def _request(
@@ -120,6 +139,36 @@ class GraphClient:
             data=data,
             timeout=60,
             stream=stream,
+        )
+
+        if response.ok:
+            return response
+
+        try:
+            error_payload = response.json()
+        except ValueError:
+            error_payload = {"raw": response.text}
+
+        raise GraphClientError(
+            f"Graph request failed with status {response.status_code}: {error_payload}"
+        )
+
+    def _request_absolute(
+        self,
+        method: str,
+        url: str,
+        *,
+        headers: dict[str, str] | None = None,
+    ) -> requests.Response:
+        merged_headers = {"Authorization": f"Bearer {self._get_access_token()}"}
+        if headers:
+            merged_headers.update(headers)
+
+        response = self.session.request(
+            method=method,
+            url=url,
+            headers=merged_headers,
+            timeout=60,
         )
 
         if response.ok:

@@ -15,6 +15,8 @@ The template can be read either from the local filesystem or from Microsoft stor
 
 ```text
 docflow-poc/
+  function_app.py
+  host.json
   src/
     config.py
     graph_client.py
@@ -22,6 +24,9 @@ docflow-poc/
     mapper.py
     docx_generator.py
     main.py
+    pipeline.py
+    state_store.py
+    trigger_service.py
   templates/
     report_template.docx
   output/
@@ -61,6 +66,18 @@ Optional defaults:
 - `DOCFLOW_ENABLE_LLM_MAPPING` default: `false`
 
 `DOCFLOW_ENABLE_LLM_MAPPING` is only a placeholder for later. This POC does not call an LLM.
+
+Timer-trigger defaults:
+
+- `DOCFLOW_INPUT_FOLDER_PATH` default: `Docflow/Input`
+- `DOCFLOW_OUTPUT_FOLDER_PATH` default: `Docflow/Output`
+- `DOCFLOW_TEMPLATE_FILE_PATH` default: `Docflow/template/report_template.docx`
+- `DOCFLOW_TEMPLATE_DRIVE_ID` default: same as `DOCFLOW_GRAPH_DRIVE_ID`
+- `DOCFLOW_POLL_SCHEDULE` default: `0 */1 * * * *`
+- `DOCFLOW_STATE_CONTAINER` default: `docflow-state`
+- `DOCFLOW_DELTA_LINK_BLOB_NAME` default: `drive-delta-link.txt`
+- `DOCFLOW_PROCESSED_ITEMS_BLOB_NAME` default: `processed-items.json`
+- `DOCFLOW_INITIAL_DELTA_MODE` default: `full_scan`
 
 ## Microsoft Graph permissions
 
@@ -114,6 +131,54 @@ python -m src.main \
 ```
 
 If the template is in a different drive, add `--template-drive-id`.
+
+## Azure Function trigger
+
+The repo now includes an Azure Functions timer entrypoint in [function_app.py](/Users/mikasiddiqui/Documents/GitHub/docflow-poc/function_app.py).
+
+Trigger behavior:
+
+- polls the configured drive on a timer using Microsoft Graph delta query
+- filters for new or changed `.pdf` files under `DOCFLOW_INPUT_FOLDER_PATH`
+- downloads the configured DOCX template from OneDrive / SharePoint
+- generates the output DOCX and uploads it to `DOCFLOW_OUTPUT_FOLDER_PATH`
+- stores the Graph delta link and processed file versions in the Function App storage account
+
+Expected Azure app settings:
+
+```env
+DOCFLOW_GRAPH_TENANT_ID=...
+DOCFLOW_GRAPH_CLIENT_ID=...
+DOCFLOW_GRAPH_CLIENT_SECRET=...
+DOCFLOW_GRAPH_DRIVE_ID=...
+DOCFLOW_INPUT_FOLDER_PATH=Docflow/Input
+DOCFLOW_OUTPUT_FOLDER_PATH=Docflow/Output
+DOCFLOW_TEMPLATE_FILE_PATH=Docflow/template/report_template.docx
+DOCFLOW_OUTPUT_DIR=/tmp/docflow
+DOCFLOW_LOG_LEVEL=INFO
+DOCFLOW_POLL_SCHEDULE=0 */1 * * * *
+DOCFLOW_STATE_CONTAINER=docflow-state
+DOCFLOW_DELTA_LINK_BLOB_NAME=drive-delta-link.txt
+DOCFLOW_PROCESSED_ITEMS_BLOB_NAME=processed-items.json
+DOCFLOW_INITIAL_DELTA_MODE=full_scan
+```
+
+Deployment note:
+
+- The Function App uses `AzureWebJobsStorage` for its internal state store.
+- For the first deployment, manual deploy is simpler than continuous deployment.
+- `.funcignore` excludes local output, tests, virtualenv files, and synthetic example assets from Azure deploys.
+
+Deployment command:
+
+```bash
+func azure functionapp publish YOUR_FUNCTION_APP_NAME --python
+```
+
+First-run behavior:
+
+- `DOCFLOW_INITIAL_DELTA_MODE=full_scan` means the first timer run processes PDFs already in the input folder.
+- `DOCFLOW_INITIAL_DELTA_MODE=latest` means the first timer run starts tracking from "now" and only processes later uploads.
 
 ## Outputs
 

@@ -24,6 +24,15 @@ class AppSettings:
     output_dir: Path
     log_level: str
     enable_llm_mapping: bool
+    input_folder_path: str
+    output_folder_path: str
+    template_file_path: str
+    template_drive_id: str | None
+    poll_schedule: str
+    state_container: str
+    delta_link_blob_name: str
+    processed_items_blob_name: str
+    initial_delta_mode: str
 
 
 def load_settings() -> AppSettings:
@@ -46,6 +55,15 @@ def load_settings() -> AppSettings:
         output_dir=output_dir,
         log_level=os.getenv("DOCFLOW_LOG_LEVEL", "INFO").upper(),
         enable_llm_mapping=_read_bool("DOCFLOW_ENABLE_LLM_MAPPING", default=False),
+        input_folder_path=os.getenv("DOCFLOW_INPUT_FOLDER_PATH", "Docflow/Input"),
+        output_folder_path=os.getenv("DOCFLOW_OUTPUT_FOLDER_PATH", "Docflow/Output"),
+        template_file_path=os.getenv("DOCFLOW_TEMPLATE_FILE_PATH", "Docflow/template/report_template.docx"),
+        template_drive_id=os.getenv("DOCFLOW_TEMPLATE_DRIVE_ID"),
+        poll_schedule=os.getenv("DOCFLOW_POLL_SCHEDULE", "0 */1 * * * *"),
+        state_container=os.getenv("DOCFLOW_STATE_CONTAINER", "docflow-state"),
+        delta_link_blob_name=os.getenv("DOCFLOW_DELTA_LINK_BLOB_NAME", "drive-delta-link.txt"),
+        processed_items_blob_name=os.getenv("DOCFLOW_PROCESSED_ITEMS_BLOB_NAME", "processed-items.json"),
+        initial_delta_mode=os.getenv("DOCFLOW_INITIAL_DELTA_MODE", "full_scan").strip().lower(),
     )
 
 

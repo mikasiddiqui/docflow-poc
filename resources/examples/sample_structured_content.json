@@ -1,0 +1,54 @@
+{
+  "source_file_name": "stacc_floorplan_markup_sample.pdf",
+  "extracted_items": [
+    {
+      "page": 1,
+      "type": "text",
+      "content": "Ground Floor Plan - POC Sample\nSynthetic drawing for STACC-style Bluebeam note extraction test\nReception\nCorridor\nTenancy A\nAccessible WC\nStair Lobby\nLift Lobby\nMain entry\nScale 1:100 @ A3",
+      "author": "",
+      "subject": ""
+    },
+    {
+      "page": 1,
+      "type": "annotation",
+      "content": "Main entry clear opening appears under required width. Verify door leaf and nib dimensions.",
+      "author": "Tom",
+      "subject": "Doorway width"
+    },
+    {
+      "page": 1,
+      "type": "annotation",
+      "content": "Accessible WC layout requires circulation check at pan and basin. Confirm AS 1428 clearances.",
+      "author": "Aaron",
+      "subject": "Accessible WC"
+    },
+    {
+      "page": 1,
+      "type": "annotation",
+      "content": "Provide tactile ground surface indicators at top and bottom of stair flight where required.",
+      "author": "Tom",
+      "subject": "TGSI"
+    },
+    {
+      "page": 1,
+      "type": "annotation",
+      "content": "Lift lobby threshold detail to be reviewed for compliant step-free path of travel.",
+      "author": "Rachel",
+      "subject": "Path of travel"
+    },
+    {
+      "page": 2,
+      "type": "text",
+      "content": "Elevation / Detail Notes\n1. Handrail extension not shown at lower landing.\n2. Door hardware height to be verified against accessible reach ranges.",
+      "author": "",
+      "subject": ""
+    },
+    {
+      "page": 2,
+      "type": "annotation",
+      "content": "Check handrail returns and extension lengths against nominated stair detail.",
+      "author": "Tom",
+      "subject": "Handrail"
+    }
+  ]
+}
