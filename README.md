@@ -49,8 +49,6 @@ docflow-poc/
 
 ## Environment variables
 
-Copy `.env.example` to `.env` and fill in the values.
-
 Required:
 
 - `DOCFLOW_GRAPH_TENANT_ID`
@@ -238,29 +236,6 @@ The mapped JSON is the strict schema used by the DOCX step:
   ]
 }
 ```
-
-## Current limitations
-
-- No OCR
-- No retry logic
-- No batch processing
-- No database
-- No frontend
-- No Power Automate integration
-- No LLM mapping yet
-- Template handling is intentionally basic and assumes the included placeholder format
-
-## Included sample assets
-
-Synthetic sample files are included for local testing and demos:
-
-- [resources/examples/stacc_floorplan_markup_sample.pdf](/Users/mikasiddiqui/Documents/GitHub/docflow-poc/resources/examples/stacc_floorplan_markup_sample.pdf)
-- [templates/stacc_poc_report_template.docx](/Users/mikasiddiqui/Documents/GitHub/docflow-poc/templates/stacc_poc_report_template.docx)
-- [resources/examples/sample_raw_extraction.json](/Users/mikasiddiqui/Documents/GitHub/docflow-poc/resources/examples/sample_raw_extraction.json)
-- [resources/examples/sample_structured_content.json](/Users/mikasiddiqui/Documents/GitHub/docflow-poc/resources/examples/sample_structured_content.json)
-- [resources/examples/sample_filled_report.docx](/Users/mikasiddiqui/Documents/GitHub/docflow-poc/resources/examples/sample_filled_report.docx)
-
-These are synthetic examples designed to resemble a STACC-style marked-up plan review flow. They are not real client or STACC source documents.
 
 ## Test
 
