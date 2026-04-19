@@ -44,7 +44,7 @@ docflow-poc/
 - Authentication uses an Entra app registration with client credentials.
 - The simplest supported Graph addressing model is `drive_id + item_id` or `drive_id + path`.
 - The input PDF already contains machine-readable text and/or PDF annotations.
-- If Bluebeam comments were flattened into the PDF visually, this build falls back to plain text extraction and records that in logs and audit output.
+- If comments were flattened into the PDF visually, this build falls back to plain text extraction and records that in logs and audit output.
 - The included Word template is intentionally simple. It replaces a few placeholders and inserts an extracted-items table.
 
 ## Environment variables
